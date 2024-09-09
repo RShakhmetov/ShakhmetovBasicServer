@@ -1,4 +1,4 @@
-package net.dunice.BasicServer.entity;
+package net.dunice.BasicServer.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CurrentTimestamp;
 
 @Entity
 @AllArgsConstructor
@@ -13,6 +14,7 @@ import jakarta.persistence.*;
 @Getter
 @Setter
 public class ToDo {
+    @CurrentTimestamp
     private String createdAt;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
