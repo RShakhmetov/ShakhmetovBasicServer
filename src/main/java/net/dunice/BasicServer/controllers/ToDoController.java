@@ -1,22 +1,25 @@
 package net.dunice.BasicServer.controllers;
 
+import lombok.RequiredArgsConstructor;
 import net.dunice.BasicServer.models.ToDo;
 import net.dunice.BasicServer.service.ToDoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping()
+@RequiredArgsConstructor
 public class ToDoController {
-    ToDoService service;
-    @GetMapping(value = "/v1/todo")
-    public ResponseEntity<List<ToDo>> read() {
-        final List<ToDo> clients = service.readAll();
-        return clients != null && !clients.isEmpty()
-                ? new ResponseEntity<>(clients, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    private final ToDoService toDoService;
+
+    @GetMapping("/v1/todo")
+    public ResponseEntity read() {
+        return new ResponseEntity(toDoService.getAllToDo(), HttpStatus.OK);
+    }
+
+    @PostMapping("/v1/todo")
+    public @ResponseBody ResponseEntity<String> addToDo(ToDo toDo) {
+        return toDoService.addToDo(toDo);
     }
 }

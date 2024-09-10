@@ -1,15 +1,16 @@
 package net.dunice.BasicServer.service;
 
 import net.dunice.BasicServer.models.ToDo;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface ToDoService {
-    ToDo create (ToDo user);
+    ResponseEntity<String> addToDo(ToDo user);
 
-    List<ToDo> readAll();
+    List<ToDo> getAllToDo();
 
-    ToDo read(Long id);
+    ToDo getToDo(Long id);
 
     boolean delete(Long id);
 }
