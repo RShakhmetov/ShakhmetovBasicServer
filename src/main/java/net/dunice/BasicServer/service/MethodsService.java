@@ -1,10 +1,11 @@
 package net.dunice.BasicServer.service;
 
 import lombok.RequiredArgsConstructor;
+import net.dunice.BasicServer.DTOs.CreateTodoDto;
+import net.dunice.BasicServer.DTOs.GetNewsDto;
 import net.dunice.BasicServer.models.ToDo;
 import net.dunice.BasicServer.repositories.ToDoRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,18 +16,18 @@ public class MethodsService implements ToDoService {
     private final ToDoRepository toDoRepo;
 
     @Override
-    public ResponseEntity<String> addToDo(ToDo todo) {
-        try {
-            toDoRepo.save(todo);
-            return new ResponseEntity<String>(HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
-        }
+    public ToDo addToDo(CreateTodoDto createTodoDto) {
+        ToDo toDo = new ToDo();
+        toDo.setText(createTodoDto.getText());
+        return toDoRepo.save(toDo);
     }
 
     @Override
-    public List<ToDo> getAllToDo() {
-        return List.of((ToDo) toDoRepo.findAll());
+    public GetNewsDto<ToDo> getAllToDo(int page, int perPage, boolean status) {
+        List<ToDo> spisok = toDoRepo.findAll(PageRequest.of(page, perPage)).toList();
+        GetNewsDto<ToDo> getNewsDto = new GetNewsDto<>(spisok, spisok.size(), spisok.stream().filter(ToDo::isStatus).count(),
+                spisok.stream().filter(x -> !x.isStatus()).count());
+        return getNewsDto;
     }
 
     @Override

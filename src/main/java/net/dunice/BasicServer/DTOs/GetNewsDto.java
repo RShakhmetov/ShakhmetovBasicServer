@@ -9,6 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+
 public class GetNewsDto<T> {
 
     private List<T> content;
