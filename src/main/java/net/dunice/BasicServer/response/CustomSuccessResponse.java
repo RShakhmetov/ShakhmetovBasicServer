@@ -1,7 +1,5 @@
 package net.dunice.BasicServer.response;
 
-import net.dunice.BasicServer.DTOs.GetNewsDto;
-import net.dunice.BasicServer.models.ToDo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
