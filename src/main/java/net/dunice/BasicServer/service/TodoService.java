@@ -3,6 +3,7 @@ package net.dunice.BasicServer.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.dunice.BasicServer.DTOs.ChangeStatusTodoDto;
+import net.dunice.BasicServer.DTOs.ChangeTextTodoDto;
 import net.dunice.BasicServer.DTOs.CreateTodoDto;
 import net.dunice.BasicServer.DTOs.GetNewsDto;
 import net.dunice.BasicServer.models.ToDo;
@@ -54,5 +55,23 @@ public class TodoService {
 
     private List<ToDo> findAllByStatus (Boolean status, List<ToDo> list) {
         return list.stream().filter(x-> x.isStatus() == status).toList();
+    }
+
+    @Transactional
+    public BaseSuccessResponse delete(Long id) {
+        toDoRepo.deleteById(id);
+        return new BaseSuccessResponse();
+    }
+
+    @Transactional
+    public BaseSuccessResponse patchStatus(Long id, ChangeStatusTodoDto changeStatusTodoDto) {
+        toDoRepo.findById(id).ifPresent(todo -> todo.setStatus(changeStatusTodoDto.getStatus()));
+        return new BaseSuccessResponse();
+    }
+
+    @Transactional
+    public BaseSuccessResponse patchText(Long id, ChangeTextTodoDto changeTextTodoDto) {
+        toDoRepo.findById(id).ifPresent(toDo -> toDo.setText(changeTextTodoDto.getText()));
+        return new BaseSuccessResponse();
     }
 }

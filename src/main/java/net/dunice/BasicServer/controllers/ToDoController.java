@@ -2,6 +2,7 @@ package net.dunice.BasicServer.controllers;
 
 import lombok.RequiredArgsConstructor;
 import net.dunice.BasicServer.DTOs.ChangeStatusTodoDto;
+import net.dunice.BasicServer.DTOs.ChangeTextTodoDto;
 import net.dunice.BasicServer.DTOs.CreateTodoDto;
 import net.dunice.BasicServer.DTOs.GetNewsDto;
 import net.dunice.BasicServer.models.ToDo;
@@ -36,5 +37,22 @@ public class ToDoController {
     @PatchMapping
     public ResponseEntity patch (@RequestBody ChangeStatusTodoDto statusTodoDto) {
         return ResponseEntity.ok(toDoService.patch(statusTodoDto));
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity delete(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(toDoService.delete(id));
+    }
+
+    @PatchMapping(value = "status/{id}")
+    public ResponseEntity patchStatus (@PathVariable("id") Long id,
+                                       @RequestBody ChangeStatusTodoDto statusTodoDto) {
+                return ResponseEntity.ok(toDoService.patchStatus(id, statusTodoDto));
+    }
+
+    @PatchMapping(value = "text/{id}")
+    public ResponseEntity patchText (@PathVariable("id") Long id,
+                                     @RequestBody ChangeTextTodoDto changeTextTodoDto) {
+        return ResponseEntity.ok(toDoService.patchText(id,changeTextTodoDto));
     }
 }
