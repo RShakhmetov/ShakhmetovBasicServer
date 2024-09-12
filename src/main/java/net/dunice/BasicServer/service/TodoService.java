@@ -1,6 +1,5 @@
 package net.dunice.BasicServer.service;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.dunice.BasicServer.DTOs.ChangeStatusTodoDto;
@@ -9,6 +8,7 @@ import net.dunice.BasicServer.DTOs.GetNewsDto;
 import net.dunice.BasicServer.models.ToDo;
 import net.dunice.BasicServer.repositories.ToDoRepository;
 import net.dunice.BasicServer.response.BaseSuccessResponse;
+import net.dunice.BasicServer.response.CustomSuccessResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,13 +20,13 @@ import java.util.List;
 public class TodoService {
     private final ToDoRepository toDoRepo;
 
-    public ToDo createToDo(CreateTodoDto createTodoDto) {
+    public CustomSuccessResponse<ToDo> createToDo(CreateTodoDto createTodoDto) {
         ToDo toDo = new ToDo();
         toDo.setText(createTodoDto.getText());
-        return toDoRepo.save(toDo);
+        return new CustomSuccessResponse<>(HttpStatus.OK.value(), toDoRepo.save(toDo));
     }
 
-    public GetNewsDto<ToDo> getAllToDo(Integer page, Integer perPage, Boolean status) {
+    public CustomSuccessResponse<GetNewsDto<ToDo>> getAllToDo(Integer page, Integer perPage, Boolean status) {
         List<ToDo> list = toDoRepo.findAll(PageRequest.of(page, perPage)).toList();
         List<ToDo> listReadyOrNotready;
         if (status != null) {
@@ -34,8 +34,9 @@ public class TodoService {
         } else {
             listReadyOrNotready = list;
         }
-        return new GetNewsDto<>(listReadyOrNotready, list.size(),  list.stream().filter(x -> x.isStatus()).count(),
-                list.stream().filter(x-> !x.isStatus()).count());
+        return  new CustomSuccessResponse<>(new GetNewsDto<>(listReadyOrNotready,
+                list.size(),  list.stream().filter(ToDo::isStatus).count(),
+                list.stream().filter(x-> !x.isStatus()).count()));
     }
 
     @Transactional
