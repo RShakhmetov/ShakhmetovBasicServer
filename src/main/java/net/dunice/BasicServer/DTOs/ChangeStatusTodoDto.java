@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateTodoDto {
-    String text;
+public class ChangeStatusTodoDto {
+    Boolean status;
 }

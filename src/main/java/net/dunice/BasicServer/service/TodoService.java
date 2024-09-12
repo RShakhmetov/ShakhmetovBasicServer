@@ -1,13 +1,19 @@
 package net.dunice.BasicServer.service;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import net.dunice.BasicServer.DTOs.ChangeStatusTodoDto;
 import net.dunice.BasicServer.DTOs.CreateTodoDto;
 import net.dunice.BasicServer.DTOs.GetNewsDto;
 import net.dunice.BasicServer.models.ToDo;
 import net.dunice.BasicServer.repositories.ToDoRepository;
-import org.springframework.data.domain.Page;
+import net.dunice.BasicServer.response.BaseSuccessResponse;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,19 +26,32 @@ public class TodoService {
         return toDoRepo.save(toDo);
     }
 
-    public GetNewsDto<ToDo> getAllToDo(int page, int perPage, boolean status) {
-        Page<ToDo> list = toDoRepo.findAll(PageRequest.of(page, perPage));
-        GetNewsDto<ToDo> getNewsDto;
-        getNewsDto = new GetNewsDto<>(list.stream().toList(), list.getTotalElements(), list.stream().filter(ToDo::isStatus).count(),
-                list.stream().filter(x -> !x.isStatus()).count());
-        return getNewsDto;
+    public GetNewsDto<ToDo> getAllToDo(Integer page, Integer perPage, Boolean status) {
+        List<ToDo> list = toDoRepo.findAll(PageRequest.of(page, perPage)).toList();
+        List<ToDo> listReadyOrNotready;
+        if (status != null) {
+            listReadyOrNotready = findAllByStatus(status, list);
+        } else {
+            listReadyOrNotready = list;
+        }
+        return new GetNewsDto<>(listReadyOrNotready, list.size(),  list.stream().filter(x -> x.isStatus()).count(),
+                list.stream().filter(x-> !x.isStatus()).count());
     }
 
-    public ToDo getToDo(Long id) {
-        return toDoRepo.findById(id).get();
+    @Transactional
+    public BaseSuccessResponse patch(ChangeStatusTodoDto statusTodoDto) {
+        List<ToDo> list = toDoRepo.findAll();
+        list.forEach(todo -> todo.setStatus(statusTodoDto.getStatus()));
+        return new BaseSuccessResponse();
     }
 
-    public boolean delete(Long id) {
-        return false;
+    @Transactional
+    public BaseSuccessResponse deleteAllReady() {
+        toDoRepo.deleteAllByStatusTrue();
+        return new BaseSuccessResponse();
+    }
+
+    private List<ToDo> findAllByStatus (Boolean status, List<ToDo> list) {
+        return list.stream().filter(x-> x.isStatus() == status).toList();
     }
 }

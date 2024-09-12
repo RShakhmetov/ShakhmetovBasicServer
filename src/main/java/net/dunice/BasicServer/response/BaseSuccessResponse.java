@@ -1,6 +1,7 @@
 package net.dunice.BasicServer.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Transactional
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseSuccessResponse {
     private int statusCode;

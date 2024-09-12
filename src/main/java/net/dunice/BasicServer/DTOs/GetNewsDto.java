@@ -7,9 +7,8 @@ import lombok.Setter;
 import java.util.List;
 
 @AllArgsConstructor
-@Setter
 @Getter
-
+@Setter
 public class GetNewsDto<T> {
 
     private List<T> content;
