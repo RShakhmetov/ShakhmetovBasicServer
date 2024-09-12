@@ -21,10 +21,10 @@ import java.util.List;
 public class TodoService {
     private final ToDoRepository toDoRepo;
 
-    public CustomSuccessResponse<ToDo> createToDo(CreateTodoDto createTodoDto) {
+    public ToDo createToDo(CreateTodoDto createTodoDto) {
         ToDo toDo = new ToDo();
         toDo.setText(createTodoDto.getText());
-        return new CustomSuccessResponse<>(HttpStatus.OK.value(), toDoRepo.save(toDo));
+        return toDoRepo.save(toDo);
     }
 
     public CustomSuccessResponse<GetNewsDto<ToDo>> getAllToDo(Integer page, Integer perPage, Boolean status) {
