@@ -11,7 +11,6 @@ import net.dunice.BasicServer.repositories.ToDoRepository;
 import net.dunice.BasicServer.response.BaseSuccessResponse;
 import net.dunice.BasicServer.response.CustomSuccessResponse;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,24 +26,24 @@ public class TodoService {
         return toDoRepo.save(toDo);
     }
 
-    public CustomSuccessResponse<GetNewsDto<ToDo>> getAllToDo(Integer page, Integer perPage, Boolean status) {
-        List<ToDo> list = toDoRepo.findAll(PageRequest.of(page, perPage)).toList();
-        List<ToDo> listReadyOrNotready;
+    public GetNewsDto<ToDo> getAllToDo(Integer page, Integer perPage, Boolean status) {
+        List<ToDo> list = toDoRepo.findAll(PageRequest.of(page - 1, perPage)).toList();
+        List<ToDo> listReadyOrNotReady;
         if (status != null) {
-            listReadyOrNotready = findAllByStatus(status, list);
+            listReadyOrNotReady = findAllByStatus(status, list);
         } else {
-            listReadyOrNotready = list;
+            listReadyOrNotReady = list;
         }
-        return  new CustomSuccessResponse<>(new GetNewsDto<>(listReadyOrNotready,
+        return  new GetNewsDto<>(listReadyOrNotReady,
                 list.size(),  list.stream().filter(ToDo::isStatus).count(),
-                list.stream().filter(x-> !x.isStatus()).count()));
+                list.stream().filter(x-> !x.isStatus()).count());
     }
 
     @Transactional
     public BaseSuccessResponse patch(ChangeStatusTodoDto statusTodoDto) {
         List<ToDo> list = toDoRepo.findAll();
         list.forEach(todo -> todo.setStatus(statusTodoDto.getStatus()));
-        return new BaseSuccessResponse();
+        return new BaseSuccessResponse(1);
     }
 
     @Transactional
@@ -66,12 +65,12 @@ public class TodoService {
     @Transactional
     public BaseSuccessResponse patchStatus(Long id, ChangeStatusTodoDto changeStatusTodoDto) {
         toDoRepo.findById(id).ifPresent(todo -> todo.setStatus(changeStatusTodoDto.getStatus()));
-        return new BaseSuccessResponse();
+        return new BaseSuccessResponse(1);
     }
 
     @Transactional
     public BaseSuccessResponse patchText(Long id, ChangeTextTodoDto changeTextTodoDto) {
         toDoRepo.findById(id).ifPresent(toDo -> toDo.setText(changeTextTodoDto.getText()));
-        return new BaseSuccessResponse();
+        return new BaseSuccessResponse(1);
     }
 }
