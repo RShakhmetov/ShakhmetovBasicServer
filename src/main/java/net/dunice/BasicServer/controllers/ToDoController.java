@@ -2,6 +2,7 @@ package net.dunice.BasicServer.controllers;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -52,29 +53,35 @@ public class ToDoController {
     }
 
     @PatchMapping
-    public ResponseEntity<BaseSuccessResponse> patch(@RequestBody @NotNull(message = ValidationConstants.HTTP_MESSAGE_NOT_READABLE_EXCEPTION)
-                                                         ChangeStatusTodoDto statusTodoDto) {
+    public ResponseEntity<BaseSuccessResponse> patch(@RequestBody
+                                                     @Valid
+                                                     @NotNull(message =
+                                                             ValidationConstants.HTTP_MESSAGE_NOT_READABLE_EXCEPTION)
+                                                     ChangeStatusTodoDto statusTodoDto) {
         return ResponseEntity.ok(toDoService.patch(statusTodoDto));
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<BaseSuccessResponse> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<BaseSuccessResponse> delete(@PathVariable("id")
+                                                      @Min(value = 1,
+                                                           message =
+                                                           ValidationConstants.ID_MUST_BE_POSITIVE) Long id) {
         return ResponseEntity.ok(toDoService.delete(id));
     }
 
     @PatchMapping(value = "status/{id}")
     public ResponseEntity<BaseSuccessResponse> patchStatus(@PathVariable("id") Long id,
                                                            @RequestBody
-                                                           @NotNull(message = ValidationConstants.HTTP_MESSAGE_NOT_READABLE_EXCEPTION)
+                                                           @Valid
                                                            ChangeStatusTodoDto statusTodoDto) {
         return ResponseEntity.ok(toDoService.patchStatus(id, statusTodoDto));
     }
 
     @PatchMapping(value = "text/{id}")
     public ResponseEntity<BaseSuccessResponse> patchText(@PathVariable("id") Long id,
-                                    @RequestBody
-                                    @NotNull(message = ValidationConstants.HTTP_MESSAGE_NOT_READABLE_EXCEPTION)
-                                    ChangeTextTodoDto changeTextTodoDto) {
+                                                         @Valid
+                                                         @RequestBody
+                                                         ChangeTextTodoDto changeTextTodoDto) {
         return ResponseEntity.ok(toDoService.patchText(id, changeTextTodoDto));
     }
 }

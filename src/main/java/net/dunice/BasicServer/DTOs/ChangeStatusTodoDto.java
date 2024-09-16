@@ -1,7 +1,6 @@
 package net.dunice.BasicServer.DTOs;
 
 import jakarta.validation.constraints.NotNull;
-import jdk.jfr.BooleanFlag;
 import lombok.Getter;
 import lombok.Setter;
 import net.dunice.BasicServer.handling.ValidationConstants;
