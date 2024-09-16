@@ -9,7 +9,6 @@ import net.dunice.BasicServer.DTOs.GetNewsDto;
 import net.dunice.BasicServer.models.ToDo;
 import net.dunice.BasicServer.repositories.ToDoRepository;
 import net.dunice.BasicServer.response.BaseSuccessResponse;
-import net.dunice.BasicServer.response.CustomSuccessResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -34,9 +33,9 @@ public class TodoService {
         } else {
             listReadyOrNotReady = list;
         }
-        return  new GetNewsDto<>(listReadyOrNotReady,
-                list.size(),  list.stream().filter(ToDo::isStatus).count(),
-                list.stream().filter(x-> !x.isStatus()).count());
+        return new GetNewsDto<>(listReadyOrNotReady,
+                list.size(), list.stream().filter(ToDo::isStatus).count(),
+                list.stream().filter(x -> !x.isStatus()).count());
     }
 
     @Transactional
@@ -52,8 +51,8 @@ public class TodoService {
         return new BaseSuccessResponse();
     }
 
-    private List<ToDo> findAllByStatus (Boolean status, List<ToDo> list) {
-        return list.stream().filter(x-> x.isStatus() == status).toList();
+    private List<ToDo> findAllByStatus(Boolean status, List<ToDo> list) {
+        return list.stream().filter(x -> x.isStatus() == status).toList();
     }
 
     @Transactional
@@ -65,12 +64,13 @@ public class TodoService {
     @Transactional
     public BaseSuccessResponse patchStatus(Long id, ChangeStatusTodoDto changeStatusTodoDto) {
         toDoRepo.findById(id).ifPresent(todo -> todo.setStatus(changeStatusTodoDto.getStatus()));
-        return new BaseSuccessResponse(1);
+        return new BaseSuccessResponse();
     }
 
     @Transactional
     public BaseSuccessResponse patchText(Long id, ChangeTextTodoDto changeTextTodoDto) {
-        toDoRepo.findById(id).ifPresent(toDo -> toDo.setText(changeTextTodoDto.getText()));
-        return new BaseSuccessResponse(1);
+        ToDo task = toDoRepo.findById(id).orElseThrow();
+        task.setText(changeTextTodoDto.getText());
+        return new BaseSuccessResponse();
     }
 }

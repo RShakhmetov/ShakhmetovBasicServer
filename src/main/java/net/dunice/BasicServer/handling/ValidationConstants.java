@@ -1,6 +1,5 @@
 package net.dunice.BasicServer.handling;
 
-
 public interface ValidationConstants {
 
     String USERNAME_SIZE_NOT_VALID = "Username size should be between 3 and 25";

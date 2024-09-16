@@ -1,6 +1,5 @@
 package net.dunice.BasicServer.handling;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.ConstraintViolationException;
 import net.dunice.BasicServer.response.BaseSuccessResponse;
 import org.springframework.http.HttpStatus;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
                 .body(new BaseSuccessResponse(err));
     }
 
-    @ExceptionHandler (ConstraintViolationException.class)
+    @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<BaseSuccessResponse> handleConstraintViolationException(
             ConstraintViolationException ex
     ) {
@@ -40,13 +40,23 @@ public class GlobalExceptionHandler {
                 .body(new BaseSuccessResponse(err.getFirst(), err));
     }
 
-//    @ExceptionHandler (HttpMessageNotReadableException.class)
-//    public ResponseEntity<BaseSuccessResponse> handleHttpMessageNotReadableException(
-//            HttpMessageNotReadableException ex
-//    ) {
-//        Integer err = ErrorCodes.ERROR_CODE_MAP.get();
-//        return ResponseEntity
-//                .status(HttpStatus.BAD_REQUEST)
-//                .body(new BaseSuccessResponse(err));
-//    }
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<BaseSuccessResponse> handleHttpMessageNotReadableException(
+            HttpMessageNotReadableException ex
+    ) {
+        Integer err = ErrorCodes.ERROR_CODE_MAP.get(ErrorCodes.HTTP_MESSAGE_NOT_READABLE_EXCEPTION.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new BaseSuccessResponse(err));
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<BaseSuccessResponse> handleNoSuchElementException(
+            NoSuchElementException ex
+    ) {
+        Integer err = ErrorCodes.ERROR_CODE_MAP.get(ErrorCodes.TASK_NOT_FOUND.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new BaseSuccessResponse(err));
+    }
 }
